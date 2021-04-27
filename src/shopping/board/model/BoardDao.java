@@ -224,15 +224,26 @@ public class BoardDao extends SuperDao {
 		PreparedStatement pstmt = null ;
 		ResultSet rs = null ;
 		
-		String sql = "select * from boards order by no asc " ;
-
+		String sql = "select ranking, no,subject,writer,password,content,readhit,regdate,groupno,orderno,depth,remark";
+				sql += " from (select no,subject,writer,password,content,readhit,regdate,groupno,orderno,depth,remark,";
+				sql += " rank() over(order by no desc) as ranking";
+				sql += " from boards" ;
+				
+				
+				if(mode.equalsIgnoreCase("all") == false) {
+					System.out.println("not all search mode");
+					sql += " where " + mode + " like '%" + keyword + "%' " ;
+				}
+				
+				sql += " ) where ranking between ? and ? " ;
+				
 		List<Board> lists = new ArrayList<Board>() ;
 		try {
 			if( this.conn == null ){ this.conn = this.getConnection() ; }			
 			pstmt = this.conn.prepareStatement(sql) ;
 			
-//			pstmt.setInt(1, beginRow);
-//			pstmt.setInt(2, endRow); 
+			pstmt.setInt(1, beginRow);
+			pstmt.setInt(2, endRow); 
 			
 			rs = pstmt.executeQuery() ; 
 			while ( rs.next() ) {
@@ -345,8 +356,12 @@ public class BoardDao extends SuperDao {
 		PreparedStatement pstmt = null ;
 		ResultSet rs = null ;				
 
-		String sql = " " ;
-		sql += " " ;
+		String sql = " select count(*) as cnt from boards" ;
+		if(mode.equalsIgnoreCase("all") == false) {
+			System.out.println("not all search mode");
+			sql += " where " + mode + " like '%" + keyword + "%' " ;
+		}
+		
 		sql += " " ;
 		
 		int cnt = 0 ; 
@@ -355,6 +370,9 @@ public class BoardDao extends SuperDao {
 			pstmt = this.conn.prepareStatement(sql) ;			 
 			rs = pstmt.executeQuery() ; 
 			
+			if (rs.next()) {
+				cnt = rs.getInt("cnt");
+			}
 			
 			
 		} catch (SQLException e) {			

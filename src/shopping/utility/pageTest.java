@@ -2,15 +2,13 @@ package shopping.utility;
 
 public class pageTest {
 	public static void main(String[] args) {
-		String _pageNumber = "3" ;
-		String _pageSize = "10" ;
-		int totalCount = 35 ;
-		String url = "boList.jsp" ;
-		String mode = "" ;
-		String keyword = "" ;
+		String _pageNumber = "13";
+		int totalCount = 250;
+		String url = "boList";
+		String mode = "writer"; // 검색 모드
+		String keyword = "홍길동"; // 검색 키워드
 		
-		Paging pageInfo = new Paging( _pageNumber, _pageSize, totalCount, url, mode, keyword ) ;
-		
-		System.out.println( pageInfo.getPagingHtml() );
+		Paging pageInfo = new Paging(_pageNumber, totalCount, url, mode, keyword);
 	}
+	
 }

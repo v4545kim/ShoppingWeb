@@ -12,10 +12,20 @@
 <head>
 	<script>	
 		function search(){
-			alert('검색');
+			/* alert('검색'); */
+			var mode = $('#mode').val();
+			var keyword = $('#keyword').val();
+			alert(mode + '/' + keyword);
+			
+			location.href = '<%=NoForm%>boList&mode=' + mode + '&keyword=' + keyword;
 		}
 		function searchAll(){
-			alert('전체 검색');
+			/* alert('전체 검색'); */
+			location.href = '<%=NoForm%>boList';
+		}
+		function writeForm(){
+			/* alert('글 작성'); */
+			location.href = '<%=NoForm%>boInsert';
 		}
 		$(document).ready(function(){
 			
@@ -39,12 +49,14 @@
 							<th>글 내용</th>
 							<th>조회수</th>
 							<th>작성 일자</th>
+							<th>비고</th>							
+							<th>답글 쓰기</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td align="center" colspan="7">
-								<form action="" class="form-inline" role="form" name="myform" method="get"> 
+							<td align="center" colspan="9">
+								<form action="#" class="form-inline" role="form" name="myform" method="get"> 
 									<div class="form-group">
 										<select id="mode" name="mode" class="form-control">
 											<option value="all" selected="selected">-- 선택하세요.
@@ -57,9 +69,13 @@
 										<input type="text" class="form-control" name="keyword" id="keyword"> 
 									</div>									
 									&nbsp;&nbsp;
-									<button class="btn btn-default" type="submit" onclick="search();">검색</button>
+									<button class="btn btn-default" type="button" onclick="search();">검색</button>
 									&nbsp;&nbsp;
 									<button class="btn btn-default" type="button" onclick="searchAll();">전체 검색</button>
+									&nbsp;&nbsp;
+									<button class="btn btn-default" type="button" onclick="writeForm();">글쓰기</button>
+									&nbsp;&nbsp;
+									${pageInfo.pagingStatus}
 								</form>
 							</td>
 						</tr>	
@@ -72,10 +88,15 @@
 								<td>${bean.content}</td>
 								<td>${bean.readhit}</td>
 								<td>${bean.regdate}</td>
+								<td>${bean.remark}</td>
+								<td>답글</td>
 							</tr>
 						</c:forEach>
 					</tbody>
 				</table>
+				<div align="center">
+					<footer>${pageInfo.pagingHtml}</footer>
+				</div>
 			</div>
 		</div>
 	</div>
