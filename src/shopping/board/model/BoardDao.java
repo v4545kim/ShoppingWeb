@@ -46,9 +46,8 @@ public class BoardDao extends SuperDao {
 	}	
 	
 	public int InsertData( Board bean ){
-		String sql = " " ;
-		sql += " " ;
-		sql += " " ;
+		String sql = " insert into boards(no, subject, writer, password, content, groupno)" ;
+		sql += " values(myboard.nextval, ?, ?, ?, ?, myboard.currval)" ;
 
 		PreparedStatement pstmt = null ;
 		int cnt = -99999 ;
@@ -57,7 +56,11 @@ public class BoardDao extends SuperDao {
 			conn.setAutoCommit( false );
 			pstmt = super.conn.prepareStatement(sql) ;
 			
-		
+			pstmt.setString(1, bean.getSubject());
+			pstmt.setString(2, bean.getWriter());
+			pstmt.setString(3, bean.getPassword());
+			pstmt.setString(4, bean.getContent());
+			
 			cnt = pstmt.executeUpdate() ; 
 			conn.commit(); 
 		} catch (Exception e) {
@@ -80,8 +83,8 @@ public class BoardDao extends SuperDao {
 		return cnt ;
 	}
 	public int UpdateData( Board bean ){
-		String sql = " " ;
-		sql += " " ;
+		String sql = " update boards set content=?, password=?, subject=?, writer=?, readhit=?" ;
+		sql += " where no = ?" ;
 		sql += " " ;
 		
 		PreparedStatement pstmt = null ;
@@ -91,7 +94,12 @@ public class BoardDao extends SuperDao {
 			conn.setAutoCommit( false );
 			pstmt = super.conn.prepareStatement(sql) ;
 
-		
+			pstmt.setString(1, bean.getContent());
+			pstmt.setString(2, bean.getPassword());
+			pstmt.setString(3, bean.getSubject());
+			pstmt.setString(4, bean.getWriter());
+			pstmt.setInt(5, bean.getReadhit());
+			pstmt.setInt(6, bean.getNo());
 			
 			cnt = pstmt.executeUpdate() ; 
 			conn.commit(); 
@@ -114,10 +122,9 @@ public class BoardDao extends SuperDao {
 		}
 		return cnt ;
 	}
-	public int DeleteData( int pmkey ){
-		String sql = " " ;
-		sql += " " ;
-		sql += " " ;
+	public int DeleteData( int no ){
+		String sql = " delete from boards" ;
+		sql += " where no = ?" ;
 		
 		PreparedStatement pstmt = null ;
 		int cnt = -99999 ;
@@ -125,6 +132,8 @@ public class BoardDao extends SuperDao {
 			if( conn == null ){ super.conn = super.getConnection() ; }
 			conn.setAutoCommit( false );
 			pstmt = super.conn.prepareStatement(sql) ;
+			
+			pstmt.setInt(1, no);
 			
 			cnt = pstmt.executeUpdate() ; 
 			conn.commit(); 
@@ -190,19 +199,35 @@ public class BoardDao extends SuperDao {
 		PreparedStatement pstmt = null ;
 		ResultSet rs = null ;				
 		
-		String sql = " " ;
-		sql += " " ;
-		sql += " " ;
+		String sql = " select * from boards" ;
+		sql += " where no = ?" ;
 		
 		Board bean = null ;
 		try {
 			if( this.conn == null ){ this.conn = this.getConnection() ; }			
-			pstmt = this.conn.prepareStatement(sql) ;			
-			pstmt.setInt( 1, no   ); 
+			pstmt = this.conn.prepareStatement(sql) ;
+			
+			pstmt.setInt( 1, no   );
+			
 			rs = pstmt.executeQuery() ; 
 			
 			if ( rs.next() ) { 
-			
+				bean = new Board() ; 
+				
+				bean.setRegdate(String.valueOf(rs.getDate("regdate")));
+				
+				bean.setNo(rs.getInt("no"));
+				bean.setReadhit(rs.getInt("readhit"));
+				bean.setGroupno(rs.getInt("groupno"));
+				bean.setOrderno(rs.getInt("orderno"));
+				bean.setDepth(rs.getInt("depth"));
+				
+				bean.setSubject(rs.getString("subject"));
+				bean.setWriter(rs.getString("writer"));
+				bean.setPassword(rs.getString("password"));
+				bean.setContent(rs.getString("content"));
+				bean.setRemark(rs.getString("remark"));
+				
 			}
 			
 		} catch (SQLException e) {			
@@ -320,9 +345,8 @@ public class BoardDao extends SuperDao {
 	public int UpdateReadhit(int no) {
 		PreparedStatement pstmt = null ;
 		
-		String sql = " " ;
-		sql += " " ;
-		sql += " " ;
+		String sql = "update boards set readhit = readhit + 1" ;
+		sql += " where no = ?" ;
 		
 		int cnt = -99999 ; 
 		try {
@@ -330,7 +354,7 @@ public class BoardDao extends SuperDao {
 			conn.setAutoCommit( false ); 
 			pstmt = this.conn.prepareStatement( sql ) ;
 			
-			
+			pstmt.setInt(1, no);
 			
 			cnt = pstmt.executeUpdate() ;
 			conn.commit(); 

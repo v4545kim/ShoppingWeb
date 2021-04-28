@@ -7,5 +7,6 @@
 	response.sendRedirect( imsi ) ;
 %>
 	시작페이지~
+	
 </body>
 </html>

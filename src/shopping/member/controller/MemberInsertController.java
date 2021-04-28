@@ -18,7 +18,6 @@ public class MemberInsertController extends SuperClass {
 	@Override
 	public boolean validate(HttpServletRequest request) {
 		boolean isCheck = true;
-		// 유효성 검사 수행 예정
 		if (bean.getId().length() < 4 || bean.getId().length() > 10) {
 			request.setAttribute(super.PREFIX + "id", "아이디는 4자리 이상 10자리 이하이어야 합니다.");
 			isCheck = false;
@@ -111,7 +110,7 @@ public class MemberInsertController extends SuperClass {
 			new MemberLoginController().doGet(request, response);
 			
 		} else {
-			System.out.println("validation check failure");
+			System.out.println("member insert validation check failure");
 			
 			List<Member> managers = dao.GetManagerList();
 			System.out.println("manager count : " + managers.size());

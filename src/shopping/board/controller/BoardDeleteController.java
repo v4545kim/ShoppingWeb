@@ -17,19 +17,14 @@ public class BoardDeleteController extends SuperClass {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		super.doGet(request, response);
 		
-		Board bean = null ;
+		int no = Integer.parseInt(request.getParameter("no"));
+		
 		BoardDao dao = new BoardDao();
-		String data = dao.toString() ;
+		int cnt = -9999;
+		cnt = dao.DeleteData(no);
 		
-		String id = request.getParameter("id") ;
-		int no = Integer.parseInt(request.getParameter("no")) ;
+		new BoardListController().doGet(request, response);
 		
-		List<Board> lists = new ArrayList<Board>() ;
-		
-		request.setAttribute("bean", bean);
-		
-		String gotopage = "/Board/main.jsp" ;
-		super.GotoPage(gotopage);
 	}	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

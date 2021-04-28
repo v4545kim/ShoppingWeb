@@ -17,6 +17,8 @@ public class ProductListController extends SuperClass {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		super.doGet(request, response);
 		
+		String pageNumber = request.getParameter("pageNumber");
+		
 		ProductDao dao = new ProductDao();
 		List<Product> lists = dao.SelectDataList(0, 0, null, null);
 		

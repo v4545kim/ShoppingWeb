@@ -49,14 +49,16 @@
 							<th>글 내용</th>
 							<th>조회수</th>
 							<th>작성 일자</th>
-							<th>비고</th>							
-							<th>답글 쓰기</th>
+							<th>비고</th>				
+							<th>수정</th>
+							<th>삭제</th>
+							<th>답글</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td align="center" colspan="9">
-								<form action="#" class="form-inline" role="form" name="myform" method="get"> 
+							<td align="center" colspan="11">
+								<form action="" class="form-inline" role="form" name="myform" method="get"> 
 									<div class="form-group">
 										<select id="mode" name="mode" class="form-control">
 											<option value="all" selected="selected">-- 선택하세요.
@@ -72,8 +74,10 @@
 									<button class="btn btn-default" type="button" onclick="search();">검색</button>
 									&nbsp;&nbsp;
 									<button class="btn btn-default" type="button" onclick="searchAll();">전체 검색</button>
-									&nbsp;&nbsp;
-									<button class="btn btn-default" type="button" onclick="writeForm();">글쓰기</button>
+									<c:if test="${whologin != 0}">
+										&nbsp;&nbsp;
+										<button class="btn btn-default" type="button" onclick="writeForm();">글쓰기</button>
+									</c:if>
 									&nbsp;&nbsp;
 									${pageInfo.pagingStatus}
 								</form>
@@ -82,14 +86,42 @@
 						<c:forEach var="bean" items="${requestScope.lists}">	
 							<tr>
 								<td>${bean.no}</td>
-								<td>${bean.subject}</td>
+								<td>
+									<a href="<%=NoForm%>boDetailView&no=${bean.no}&${requestScope.parameters}">
+										${bean.subject}
+									</a>
+								</td>
 								<td>${bean.writer}</td>
 								<td>${bean.password}</td>
 								<td>${bean.content}</td>
 								<td>${bean.readhit}</td>
 								<td>${bean.regdate}</td>
 								<td>${bean.remark}</td>
-								<td>답글</td>
+								<td>
+									<c:if test="${sessionScope.loginfo.id == bean.writer}">
+										<a href="<%=NoForm%>boUpdate&no=${bean.no}&${requestScope.parameters}">
+											수정
+										</a>
+									</c:if>
+									<c:if test="${sessionScope.loginfo.id != bean.writer}">
+										수정
+									</c:if>
+								</td>
+								<td>
+									<c:if test="${sessionScope.loginfo.id == bean.writer}">
+										<a href="<%=NoForm%>boDelete&no=${bean.no}&${requestScope.parameters}">
+											삭제
+										</a>
+									</c:if>
+									<c:if test="${sessionScope.loginfo.id != bean.writer}">
+										삭제
+									</c:if>
+								</td>
+								<td>
+									<a href="<%=NoForm%>boReply&no=${bean.no}&${requestScope.parameters}">
+										답글
+									</a>
+								</td>
 							</tr>
 						</c:forEach>
 					</tbody>
@@ -100,5 +132,39 @@
 			</div>
 		</div>
 	</div>
+	<br><br><br><br>
+	<script type="text/javascript">
+		/* 필드 검색 상태 보존 */
+		$('#mode option').each(function(){
+			if($(this).val() == '${pageInfo.mode}'){
+				$(this).attr('selected', 'selected');
+			}
+		});
+		
+		$('#keyword').val('${pageInfo.keyword}');
+	</script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
