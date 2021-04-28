@@ -24,7 +24,7 @@ public class BoardListController extends SuperClass {
 					request.getParameter("mode"), 
 					request.getParameter("keyword"));
 		
-		System.out.println("parameter list ");
+		System.out.println("parameter list : ");
 		System.out.println(parameters.toString());
 		
 		String contextPath = request.getContextPath();

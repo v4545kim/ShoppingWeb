@@ -121,16 +121,26 @@ public class ProductDao extends SuperDao {
 		PreparedStatement pstmt = null ;
 		ResultSet rs = null ;
 		
-		String sql = "select * from products order by num asc" ;
-
+		String sql = "select ranking, num,name,company,image,stock,price,category,contents,point,inputdate,remark";
+		sql += " from (select num,name,company,image,stock,price,category,contents,point,inputdate,remark,";
+		sql += " rank() over(order by num desc) as ranking";
+		sql += " from products" ;
+		
+		if(mode.equalsIgnoreCase("all") == false) {
+			System.out.println("not all search mode");
+			sql += " where " + mode + " like '%" + keyword + "%' " ;
+		}
+		
+		sql += " ) where ranking between ? and ? " ;
+		
 		List<Product> lists = new ArrayList<Product>();
 		
 		try {
 			if( conn == null ){ super.conn = super.getConnection() ; }
 			pstmt = super.conn.prepareStatement(sql) ;
 			
-//			pstmt.setInt(1, beginRow);
-//			pstmt.setInt(2, endRow);
+			pstmt.setInt(1, beginRow);
+			pstmt.setInt(2, endRow);
 			
 			rs = pstmt.executeQuery() ;	
 			
@@ -164,7 +174,7 @@ public class ProductDao extends SuperDao {
 				e2.printStackTrace(); 
 			}
 		}
-		
+		System.out.println("보드 게시판 리스트 전달");
 		return lists ;
 	}
 
@@ -205,21 +215,22 @@ public class ProductDao extends SuperDao {
 		PreparedStatement pstmt = null ;
 		ResultSet rs = null ;
 		
-		String sql = " " ;
-		sql += "  " ;
-		sql += "  " ;
+		String sql = " select count(*) as cnt from products" ;
+		if(mode.equalsIgnoreCase("all") == false) {
+			System.out.println("not all search mode");
+			sql += " where " + mode + " like '%" + keyword + "%' " ;
+		}
 
-		
 		int cnt = 0 ; //없는 경우의 기본 값
 		try {
 			if( this.conn == null ){ this.conn = this.getConnection() ; }			
-			pstmt = this.conn.prepareStatement(sql) ;			 
-			rs = pstmt.executeQuery() ; 
+			pstmt = this.conn.prepareStatement(sql) ;
+			rs = pstmt.executeQuery() ;
 			
 			if ( rs.next() ) { 
 				cnt = rs.getInt("cnt");
 			}
-			
+		
 		} catch (SQLException e) {			
 			e.printStackTrace();
 		} finally{

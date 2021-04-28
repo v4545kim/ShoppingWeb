@@ -386,8 +386,6 @@ public class BoardDao extends SuperDao {
 			sql += " where " + mode + " like '%" + keyword + "%' " ;
 		}
 		
-		sql += " " ;
-		
 		int cnt = 0 ; 
 		try {
 			if( this.conn == null ){ this.conn = this.getConnection() ; }			

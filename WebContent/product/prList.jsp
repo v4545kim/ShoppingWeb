@@ -12,10 +12,16 @@
 <head>
 	<script>	
 		function search(){
-			alert('검색');
+			/* alert('검색'); */
+			var mode = $('#mode').val();
+			var keyword = $('#keyword').val();
+			alert(mode + '/' + keyword);
+			
+			location.href = '<%=NoForm%>prList&mode=' + mode + '&keyword=' + keyword;
 		}
 		function searchAll(){
-			alert('전체 검색');
+			/* alert('전체 검색'); */
+			location.href = '<%=NoForm%>prList';
 		}
 		
 		$(document).ready(function(){
@@ -35,7 +41,7 @@
 						<tr>
 							<th>상품 번호</th>
 							<th>상품명</th>
-							<th>제조사</th>							
+							<th>제조사</th>						
 							<th>이미지</th>
 							<th>상품 수량</th>
 							<th>상품 가격</th>
@@ -43,11 +49,12 @@
 							<th>상품 내용</th>							
 							<th>포인트</th>
 							<th>입고 일자</th>
+							<th>비고</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td align="center" colspan="10">
+							<td align="center" colspan="11">
 								<form action="" class="form-inline" role="form" name="myform" method="get"> 
 									<div class="form-group">
 										<select id="mode" name="mode" class="form-control">
@@ -60,13 +67,19 @@
 										<input type="text" class="form-control" name="keyword" id="keyword"> 
 									</div>									
 									&nbsp;&nbsp;
-									<button class="btn btn-default" type="submit" onclick="search();">검색</button>
+									<button class="btn btn-default" type="button" onclick="search();">검색</button>
 									&nbsp;&nbsp;
 									<button class="btn btn-default" type="button" onclick="searchAll();">전체 검색</button>
+									<c:if test="${whologin != 0}">
+										&nbsp;&nbsp;
+										<button class="btn btn-default" type="button" onclick="writeForm();">글쓰기</button>
+									</c:if>
+									&nbsp;&nbsp;
+									${pageInfo.pagingStatus}
 								</form>
 							</td>
 						</tr>
-						<c:forEach var="bean" items="${requestScope.lists}">		
+						<c:forEach var="bean" items="${requestScope.lists}">
 							<tr>
 								<td>${bean.num}</td>
 								<td>${bean.name}</td>
@@ -78,12 +91,27 @@
 								<td>${bean.contents}</td>
 								<td>${bean.point}</td>
 								<td>${bean.inputdate}</td>
+								<td>${bean.remark}</td>
 							</tr>
 						</c:forEach>
 					</tbody>
 				</table>
+				<div align="center">
+					<footer>${pageInfo.pagingHtml}</footer>
+				</div>
 			</div>
 		</div>
 	</div>
+	<br><br><br><br>
+	<script type="text/javascript">
+		/* 필드 검색 상태 보존 */
+		$('#mode option').each(function(){
+			if($(this).val() == '${pageInfo.mode}'){
+				$(this).attr('selected', 'selected');
+			}
+		});
+		
+		$('#keyword').val('${pageInfo.keyword}');
+	</script>
 </body>
 </html>
