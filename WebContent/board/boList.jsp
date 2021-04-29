@@ -31,6 +31,9 @@
 			
 		});
 	</script>
+	<style type="text/css">
+		.badge{background: orange; color: red;}
+	</style>
 </head>
 <body>
 	<div class="container col-sm-offset-<%=offset%> col-sm-<%=mywidth%>">
@@ -87,6 +90,9 @@
 							<tr>
 								<td>${bean.no}</td>
 								<td>
+									<c:forEach var="cnt" begin="1" end="${bean.depth}">
+										<span class="badge">re</span>&nbsp;
+									</c:forEach>
 									<a href="<%=NoForm%>boDetailView&no=${bean.no}&${requestScope.parameters}">
 										${bean.subject}
 									</a>
@@ -118,9 +124,12 @@
 									</c:if>
 								</td>
 								<td>
-									<a href="<%=NoForm%>boReply&no=${bean.no}&${requestScope.parameters}">
-										답글
-									</a>
+									<c:if test="${bean.depth < 3 }">
+										<c:set var="reply" value="&groupno=${bean.groupno}&orderno=${bean.orderno}&depth=${bean.depth}"/>
+										<a href="<%=NoForm%>boReply&no=${bean.no}&${requestScope.parameters}${reply}">
+											답글
+										</a>
+									</c:if>
 								</td>
 							</tr>
 						</c:forEach>

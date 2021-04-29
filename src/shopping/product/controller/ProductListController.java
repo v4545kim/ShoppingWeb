@@ -18,41 +18,45 @@ public class ProductListController extends SuperClass {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		super.doGet(request, response);
 		
-		FlowParameters parameters
-		= new FlowParameters(
-				request.getParameter("pageNumber"), 
-				request.getParameter("mode"), 
-				request.getParameter("keyword"));
+		FlowParameters parameters 
+			= new FlowParameters(
+					request.getParameter("pageNumber"), 
+					request.getParameter("mode"), 
+					request.getParameter("keyword")); 
 		
-		System.out.println("parameter list : ");
+		System.out.println("parameter list ");
 		System.out.println(parameters.toString());
-		
-		String contextPath = request.getContextPath();
-		String url = contextPath + "/shopping?command=prList";
+			
+		String contextPath = request.getContextPath() ;
+		String url = contextPath + "/Shopping?command=prList" ;
 		
 		ProductDao dao = new ProductDao();
 		
-		int totalCount = dao.SelectTotalCount(parameters.getMode(), parameters.getKeyword());
-		System.out.println("total data size : " + totalCount);
+		// 행(row) 총 개수
+		int totalCount = dao.SelectTotalCount(parameters.getMode(), parameters.getKeyword()) ; 
+		System.out.println("total data size : " + totalCount); 
 		
 		Paging pageInfo = new Paging(
-				parameters.getPageNumber(), 
-				totalCount,
-				url,
-				parameters.getMode(), 
-				parameters.getKeyword());
-		
+								parameters.getPageNumber(), 
+								totalCount, 
+								url, 
+								parameters.getMode(), 
+								parameters.getKeyword()) ;	 	
+		    
 		List<Product> lists = dao.SelectDataList(
-				pageInfo.getBeginRow(), 
-				pageInfo.getEndRow(), 
-				parameters.getMode(), 
-				parameters.getKeyword());
-		System.out.println("board list count : " + lists.size());
-		// 바인딩
+					pageInfo.getBeginRow(), 
+					pageInfo.getEndRow(), 
+					parameters.getMode(), 
+					parameters.getKeyword() ) ;
+		
+		System.out.println("product list count : " + lists.size()); 
+		
 		request.setAttribute("lists", lists);
 		request.setAttribute("pageInfo", pageInfo);
-		// 자주 사용되는 파라미터를 속성으로 정의합니다.
+		
+		// 자주 사용되는 파라미터를 속성으로 정의합니다. 
 		request.setAttribute("parameters", parameters.toString());
+		
 		
 		String gotopage = "/product/prList.jsp" ;
 		super.GotoPage(gotopage);
@@ -62,4 +66,3 @@ public class ProductListController extends SuperClass {
 		super.doPost(request, response);
 	}
 }
-

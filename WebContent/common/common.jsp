@@ -96,8 +96,8 @@
 							<li>
 								<c:if test="${whologin != 0}">
 									<a href="<%=NoForm%>boInsert">게시물 등록</a>
+									<a href="<%=NoForm%>boList">게시물 목록 보기</a>
 								</c:if>
-								<a href="<%=NoForm%>boList">게시물 목록 보기</a>
 							</li>
 						</ul>
 					</li>

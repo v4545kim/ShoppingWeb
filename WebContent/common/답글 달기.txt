@@ -12,13 +12,13 @@
 -- groupno는 num 컬럼과 동일하게 작성하면 된다.
 -- num : 시퀀스.nextval, groupno : 시퀀스.currval, orderno = 0, depth = 0 
 --------------------------------------------------------------------------------------------------------
--- 댓글 작성시
+-- 답글 작성시
 -- 다음 문장으로 업데이트를 수행한다.
 -- update sample set orderno = orderno + 1 where groupno = 부모의groupno and orderno > 부모의orderno ; 
 -- 다음의 값으로 인서트한다.
 -- num : 시퀀스.nextval, groupno : 부모의groupno사용, orderno은 1증가, depth는 1증가 시켜서 인서트한다.
 --------------------------------------------------------------------------------------------------------
-drop table sample purge;	
+drop table sample purge;
 drop sequence seqsam ;
 
 create sequence seqsam ;
@@ -36,39 +36,39 @@ create table sample(
 insert into sample values(seqsam.nextval, '김유신', seqsam.currval, 0, 0 ) ;
 insert into sample values(seqsam.nextval, '이순신', seqsam.currval, 0, 0 ) ;
 
--- 김유신에 대한 댓글 달기( groupno = 1, orderno = 0, depth = 0  )
+-- 김유신에 대한 답글 달기( groupno = 1, orderno = 0, depth = 0  )
 update sample set orderno = orderno + 1 where groupno = 1 and orderno > 0 ; 
 -- 0 행이 갱신되었습니다.
 insert into sample values(seqsam.nextval, '최영', 1, 1, 1 ) ;
 
--- 김유신에 대한 댓글 달기( groupno = 1, orderno = 0, depth = 0  )
+-- 김유신에 대한 답글 달기( groupno = 1, orderno = 0, depth = 0  )
 update sample set orderno = orderno + 1 where groupno = 1 and orderno > 0 ; 
 -- 1 행이 갱신되었습니다.
 
 insert into sample values(seqsam.nextval, '강감찬', 1, 1, 1 ) ;
 
--- 김유신에 대한 댓글 달기( groupno = 1, orderno = 0, depth = 0 )
+-- 김유신에 대한 답글 달기( groupno = 1, orderno = 0, depth = 0 )
 update sample set orderno = orderno + 1 where groupno = 1 and orderno > 0 ; 
 -- 2 행이 갱신되었습니다.
 
 insert into sample values(seqsam.nextval, '윤봉길', 1, 1, 1 ) ;
 
--- 강감찬에 대한 댓글 달기( groupno = 1, orderno = 2, depth = 1  )
+-- 강감찬에 대한 답글 달기( groupno = 1, orderno = 2, depth = 1  )
 update sample set orderno = orderno + 1 where groupno = 1 and orderno > 2 ; 
 -- 1 행이 갱신되었습니다.
 insert into sample values(seqsam.nextval, '김구', 1, 3, 2 ) ;
 
--- 강감찬에 대한 댓글 달기( groupno = 1, orderno = 2, depth = 1  )
+-- 강감찬에 대한 답글 달기( groupno = 1, orderno = 2, depth = 1  )
 update sample set orderno = orderno + 1 where groupno = 1 and orderno > 2 ; 
 -- 2 행이 갱신되었습니다.
 insert into sample values(seqsam.nextval, '김좌진', 1, 3, 2 ) ;
 
--- 이순신에 대한 댓글 달기( groupno = 2, orderno = 0, depth = 0  )
+-- 이순신에 대한 답글 달기( groupno = 2, orderno = 0, depth = 0  )
 update sample set orderno = orderno + 1 where groupno = 2 and orderno > 0 ; 
 -- 0 행이 갱신되었습니다.
 insert into sample values(seqsam.nextval, '안중근', 2, 1, 1 ) ;
 
--- 이순신에 대한 댓글 달기( groupno = 2, orderno = 0, depth = 0  )
+-- 이순신에 대한 답글 달기( groupno = 2, orderno = 0, depth = 0  )
 update sample set orderno = orderno + 1 where groupno = 2 and orderno > 0 ; 
 -- 1 행이 갱신되었습니다.
 insert into sample values(seqsam.nextval, '논개', 2, 1, 1 ) ;
@@ -84,14 +84,14 @@ order by groupno desc, orderno asc, depth asc ;
 NUM NAME            GROUPNO    ORDERNO      DEPTH
 ---------- ------------ ---------- ---------- ----------
 2 이순신                2          0          0
-9 논개                2          1          1
+9 논개                 2          1          1
 8 안중근                2          2          1
 1 김유신                1          0          0
 5 윤봉길                1          1          1
 4 강감찬                1          2          1
-7 김좌진              1          3          2
-6 김구              1          4          2
-3 최영                1          5          1
+7 김좌진                1          3          2
+6 김구                 1          4          2
+3 최영                 1          5          1
 
 
 9 개의 행이 선택되었습니다.

@@ -3,6 +3,8 @@ public class Product {
 	private int num ;	
 	private String name ;
 	private String company ;
+	
+	// image 컬럼에는 업로드 된 파일 이름만 입력됩니다.
 	private String image ;
 	private int stock ;
 	private int price ;

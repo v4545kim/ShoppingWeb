@@ -12,16 +12,15 @@
 <head>
 	<script>	
 		function search(){
-			/* alert('검색'); */
-			var mode = $('#mode').val();
-			var keyword = $('#keyword').val();
-			alert(mode + '/' + keyword);
-			
-			location.href = '<%=NoForm%>prList&mode=' + mode + '&keyword=' + keyword;
+			var mode = $('#mode').val() ;
+			var keyword = $('#keyword').val() ;
+			location.href='<%=NoForm%>prList' + '&mode=' + mode + '&keyword=' + keyword ;
 		}
 		function searchAll(){
-			/* alert('전체 검색'); */
-			location.href = '<%=NoForm%>prList';
+			location.href='<%=NoForm%>prList';
+		}
+		function writeForm(){
+			location.href='<%=NoForm%>prInsert';
 		}
 		
 		$(document).ready(function(){
@@ -38,29 +37,31 @@
 			<div class="panel-body">
 				<table class="table table-hover">
 					<thead>
-						<tr>
-							<th>상품 번호</th>
-							<th>상품명</th>
-							<th>제조사</th>						
-							<th>이미지</th>
-							<th>상품 수량</th>
-							<th>상품 가격</th>
-							<th>카테고리</th>
-							<th>상품 내용</th>							
-							<th>포인트</th>
-							<th>입고 일자</th>
-							<th>비고</th>
-						</tr>
-					</thead>
+					<tr>
+						<th>번호</th>
+						<th>상품명</th>
+						<th>제조 회사</th>
+						<th>이미지</th>
+						<th>재고</th>
+						<th>단가</th>
+						<th>카테고리</th>
+						<th>상품 설명</th>
+						<th>포인트</th>
+						<th>입고 일자</th>
+						<th>삭제</th>
+						<th>수정</th>
+					</tr>
+				</thead>
 					<tbody>
 						<tr>
-							<td align="center" colspan="11">
+							<td align="center" colspan="12">
 								<form action="" class="form-inline" role="form" name="myform" method="get"> 
 									<div class="form-group">
 										<select id="mode" name="mode" class="form-control">
 											<option value="all" selected="selected">-- 선택하세요.
-											<option value="num">상품 번호
-											<option value="name">상품명
+											<option value="name">이름
+											<option value="company">제조회사
+											<option value="category">카테코리
 										</select>
 									</div>									
 									<div class="form-group">
@@ -70,48 +71,72 @@
 									<button class="btn btn-default" type="button" onclick="search();">검색</button>
 									&nbsp;&nbsp;
 									<button class="btn btn-default" type="button" onclick="searchAll();">전체 검색</button>
-									<c:if test="${whologin != 0}">
-										&nbsp;&nbsp;
-										<button class="btn btn-default" type="button" onclick="writeForm();">글쓰기</button>
-									</c:if>
+									<c:if test="${whologin == 2}">
+										<button class="btn btn-default btn-info" type="button"
+											onclick="writeForm();">상품 등록</button>
+										</c:if>
 									&nbsp;&nbsp;
-									${pageInfo.pagingStatus}
+									${pageInfo.pagingStatus}																	
 								</form>
 							</td>
 						</tr>
-						<c:forEach var="bean" items="${requestScope.lists}">
-							<tr>
-								<td>${bean.num}</td>
-								<td>${bean.name}</td>
-								<td>${bean.company}</td>
-								<td>${bean.image}</td>
-								<td>${bean.stock}</td>
-								<td>${bean.price}</td>
-								<td>${bean.category}</td>
-								<td>${bean.contents}</td>
-								<td>${bean.point}</td>
-								<td>${bean.inputdate}</td>
-								<td>${bean.remark}</td>
-							</tr>
-						</c:forEach>
+				<c:forEach var="bean" items="${requestScope.lists}">
+				<tr>
+					<td>${bean.num}</td>
+					<td>
+						<a href="<%=NoForm%>prDetailView&num=${bean.num}&${requestScope.parameters}">
+							${bean.name}
+						</a>
+					</td>
+					<td>${bean.company}</td>
+					<td>${bean.image}</td>
+					<td>${bean.stock}</td>
+					<td>${bean.price}</td>
+					<td>${bean.category}</td>
+					<td>${bean.contents}</td>
+					<td>${bean.point}</td>
+					<td>${bean.inputdate}</td>
+					<td>
+						<c:if test="${whologin == 2}">
+							<a href="<%=NoForm%>prDelete&num=${bean.num}&${requestScope.parameters}">
+								삭제
+							</a>
+						</c:if>
+						<c:if test="${whologin != 2}">
+							삭제
+						</c:if>				
+					</td>
+					<td>
+						<c:if test="${whologin == 2}">
+							<a href="<%=NoForm%>prUpdate&num=${bean.num}&${requestScope.parameters}">
+								수정
+							</a>
+						</c:if>
+						<c:if test="${whologin != 2}">
+							수정
+						</c:if>					
+						
+					</td>
+				</tr>
+				</c:forEach>											
 					</tbody>
 				</table>
-				<div align="center">
-					<footer>${pageInfo.pagingHtml}</footer>
-				</div>
+			</div>
+			<div align="center">
+				<footer>${pageInfo.pagingHtml}</footer>
 			</div>
 		</div>
+		<br><br><br><br>
+		<script type="text/javascript">
+		   /* 방금 전 선택한 콤보 박스를 그대로 보여 주기 */ 
+			$('#mode option').each(function(){
+				if( $(this).val() == '${pageInfo.mode}' ){
+					$(this).attr('selected', 'selected') ;
+				}
+			});	
+			/* 이전에 넣었던 값 그대로 보존 */
+			$('#keyword').val( '${pageInfo.keyword}' ) ;		
+		</script>	
 	</div>
-	<br><br><br><br>
-	<script type="text/javascript">
-		/* 필드 검색 상태 보존 */
-		$('#mode option').each(function(){
-			if($(this).val() == '${pageInfo.mode}'){
-				$(this).attr('selected', 'selected');
-			}
-		});
-		
-		$('#keyword').val('${pageInfo.keyword}');
-	</script>
 </body>
 </html>

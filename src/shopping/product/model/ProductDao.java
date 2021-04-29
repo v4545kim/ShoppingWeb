@@ -10,9 +10,13 @@ import shopping.common.model.SuperDao;
 
 public class ProductDao extends SuperDao {
 	public int InsertData( Product bean ){
-		String sql = " " ;
-		sql += "  " ;
-		sql += "  " ;
+		String sql = " insert into products" ;
+		sql += " ( " ;
+		sql += " num, name, company, image, stock, price, category, contents, point, inputdate " ;
+		sql += " ) " ;
+		sql += " values( " ;
+		sql += " seqprod.nextval, ?, ?, ?, ?, ?, ?, ?, ?, sysdate " ;
+		sql += " ) " ;
 		
 		PreparedStatement pstmt = null ;
 		int cnt = -99999 ;
@@ -21,7 +25,14 @@ public class ProductDao extends SuperDao {
 			conn.setAutoCommit( false );
 			pstmt = super.conn.prepareStatement(sql) ;
 			
-
+			pstmt.setString(1, bean.getName());
+			pstmt.setString(2, bean.getCompany());
+			pstmt.setString(3, bean.getImage());
+			pstmt.setInt(4, bean.getStock());
+			pstmt.setInt(5, bean.getPrice());
+			pstmt.setString(6, bean.getCategory());
+			pstmt.setString(7, bean.getContents());
+			pstmt.setInt(8, bean.getPoint());
 			
 			cnt = pstmt.executeUpdate() ; 
 			conn.commit(); 
@@ -121,18 +132,18 @@ public class ProductDao extends SuperDao {
 		PreparedStatement pstmt = null ;
 		ResultSet rs = null ;
 		
-		String sql = "select ranking, num,name,company,image,stock,price,category,contents,point,inputdate,remark";
-		sql += " from (select num,name,company,image,stock,price,category,contents,point,inputdate,remark,";
-		sql += " rank() over(order by num desc) as ranking";
-		sql += " from products" ;
+		String sql = " select ranking, num, name, company, image, stock, price, category, contents, point, inputdate, remark " ;
+		sql += " from ( select num, name, company, image, stock, price, category, contents, point, inputdate, remark, rank() over(order by num desc) as ranking " ;
+		sql += " from products  " ;
 		
-		if(mode.equalsIgnoreCase("all") == false) {
+		if(mode.equalsIgnoreCase("all") ==false) { 
 			System.out.println("not all search mode");
-			sql += " where " + mode + " like '%" + keyword + "%' " ;
+			sql += " where " + mode + " like '%" + keyword + "%' " ;	
 		}
 		
-		sql += " ) where ranking between ? and ? " ;
-		
+		sql += "  ) " ;
+		sql += " where ranking between ? and ?  " ;	
+
 		List<Product> lists = new ArrayList<Product>();
 		
 		try {
@@ -147,21 +158,19 @@ public class ProductDao extends SuperDao {
 			while( rs.next() ){
 				Product bean = new Product();
 				
-				bean.setInputdate(String.valueOf(rs.getDate("inputdate")));
-				
 				bean.setNum(rs.getInt("num"));
-				bean.setPoint(rs.getInt("point"));
-				bean.setStock(rs.getInt("stock"));
-				bean.setPrice(rs.getInt("price"));
-				
-				bean.setName(rs.getString("name"));
+				bean.setName(rs.getString("name"));				
 				bean.setCompany(rs.getString("company"));
 				bean.setImage(rs.getString("image"));
+				bean.setStock(rs.getInt("stock"));
+				bean.setPrice(rs.getInt("price"));
 				bean.setCategory(rs.getString("category"));
-				bean.setContents(rs.getString("contents"));
+				bean.setInputdate(String.valueOf(rs.getDate("inputdate")));
+				bean.setContents(rs.getString("contents"));				
+				bean.setPoint(rs.getInt("point"));
 				bean.setRemark(rs.getString("remark"));
 				
-				lists.add( bean ) ;
+				lists.add(bean);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -174,7 +183,7 @@ public class ProductDao extends SuperDao {
 				e2.printStackTrace(); 
 			}
 		}
-		System.out.println("보드 게시판 리스트 전달");
+		
 		return lists ;
 	}
 
@@ -215,22 +224,21 @@ public class ProductDao extends SuperDao {
 		PreparedStatement pstmt = null ;
 		ResultSet rs = null ;
 		
-		String sql = " select count(*) as cnt from products" ;
-		if(mode.equalsIgnoreCase("all") == false) {
+		String sql = " select count(*) as cnt from products " ;
+		if(mode.equalsIgnoreCase("all") ==false) { 
 			System.out.println("not all search mode");
-			sql += " where " + mode + " like '%" + keyword + "%' " ;
+			sql += " where " + mode + " like '%" + keyword + "%' " ;	
 		}
-
 		int cnt = 0 ; //없는 경우의 기본 값
 		try {
 			if( this.conn == null ){ this.conn = this.getConnection() ; }			
-			pstmt = this.conn.prepareStatement(sql) ;
-			rs = pstmt.executeQuery() ;
+			pstmt = this.conn.prepareStatement(sql) ;			 
+			rs = pstmt.executeQuery() ; 
 			
 			if ( rs.next() ) { 
 				cnt = rs.getInt("cnt");
 			}
-		
+			
 		} catch (SQLException e) {			
 			e.printStackTrace();
 		} finally{

@@ -10,9 +10,8 @@ import shopping.common.model.SuperDao;
 
 public class BoardDao extends SuperDao {
 	public int ReplyData( Board bean ){
-		String sql = " " ;
-		sql += " " ;
-		sql += " " ;
+		String sql = " update boards set orderno = orderno + 1";
+		sql += " where groupno = ? and orderno > ?";
 		
 		PreparedStatement pstmt = null ;
 		int cnt = -99999 ;
@@ -21,9 +20,35 @@ public class BoardDao extends SuperDao {
 			conn.setAutoCommit( false );
 			pstmt = super.conn.prepareStatement(sql) ;
 			
+			pstmt.setInt(1, bean.getGroupno());
+			pstmt.setInt(2, bean.getOrderno());
 			
 			
 			cnt = pstmt.executeUpdate() ; 
+			
+			sql = " insert into boards" ;
+			sql += " (" ;
+			sql += " no, subject, writer, password, content, groupno, orderno, depth" ;
+			sql += " )" ;
+			sql += " values" ;
+			sql += " (" ;
+			sql += " myboard.nextval, ?, ?, ?, ?, ?, ?, ?" ;
+			sql += " )" ;
+			
+			pstmt = null;
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, bean.getSubject());
+			pstmt.setString(2, bean.getWriter());
+			pstmt.setString(3, bean.getPassword());
+			pstmt.setString(4, bean.getContent());
+			pstmt.setInt(5, bean.getGroupno());
+			pstmt.setInt(6, bean.getOrderno() + 1);
+			pstmt.setInt(7, bean.getDepth() + 1);
+			
+			cnt = pstmt.executeUpdate();
+			
+			
 			conn.commit(); 
 		} catch (Exception e) {
 			SQLException err = (SQLException)e ;			
@@ -251,7 +276,7 @@ public class BoardDao extends SuperDao {
 		
 		String sql = "select ranking, no,subject,writer,password,content,readhit,regdate,groupno,orderno,depth,remark";
 				sql += " from (select no,subject,writer,password,content,readhit,regdate,groupno,orderno,depth,remark,";
-				sql += " rank() over(order by no desc) as ranking";
+				sql += " rank() over(order by groupno desc, orderno asc, depth asc) as ranking";
 				sql += " from boards" ;
 				
 				
@@ -475,5 +500,40 @@ public class BoardDao extends SuperDao {
 			}
 		}
 		return cnt ; 
+	}
+
+	public int GetGroupnoCount(int groupno) {
+		PreparedStatement pstmt = null ;
+		ResultSet rs = null ;				
+
+		String sql = " select count(*) as cnt from boards" ;
+			sql += " where groupno = ?" ;
+		
+		int cnt = 0 ; 
+		try {
+			if( this.conn == null ){ this.conn = this.getConnection() ; }			
+			pstmt = this.conn.prepareStatement(sql) ;
+			
+			pstmt.setInt(1, groupno);
+			
+			rs = pstmt.executeQuery() ; 
+			
+			if (rs.next()) {
+				cnt = rs.getInt("cnt");
+			}
+			
+			
+		} catch (SQLException e) {			
+			e.printStackTrace();
+		} finally{
+			try {
+				if( rs != null){ rs.close(); } 
+				if( pstmt != null){ pstmt.close(); } 
+				this.closeConnection() ;
+			} catch (Exception e2) {
+				e2.printStackTrace(); 
+			}
+		} 		
+		return cnt  ; 
 	}
 }
