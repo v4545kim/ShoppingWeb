@@ -30,8 +30,8 @@
 					<table>
 						<tr>
 							<td>
-								<img src="./../images/konan01.png" class="img-rounded" 
-									alt="사과" width="200" height="200">		
+								<img src="${applicationScope.uploadedPath}/${bean.image}" class="img-rounded" 
+									alt="${bean.name}" width="200" height="200">		
 							</td>
 						</tr>
 					</table>
@@ -40,28 +40,31 @@
 					<table class="table table-bordered">
 						<tr>
 							<td width="25%" align="center">상품명(번호)</td>
-							<td width="75%" align="left">월드콘(5)</td>
+							<td width="75%" align="left">${bean.name}(${bean.num})</td>
 						</tr>
 						<tr>
 							<td width="25%" align="center">제조 회사</td>
-							<td width="75%" align="left">해태 제과</td>
+							<td width="75%" align="left">${bean.company}</td>
 						</tr>
 						<tr>
 							<td width="25%" align="center">재고 수량</td>
-							<td width="75%" align="left">100</td>
+							<td width="75%" align="left">${bean.stock}</td>
 						</tr>
 						<tr>
 							<td width="25%" align="center">가격</td>
-							<td width="75%" align="left">10,000</td>
+							<td width="75%" align="left">${bean.price}</td>
 						</tr>
 						<tr>
 							<td width="25%" align="center">설명</td>
-							<td width="75%" align="left">맛있어요</td>
+							<td width="75%" align="left">${bean.contents}</td>
 						</tr>
 						<tr>
 							<td width="25%" align="center">주문 수량</td>
 							<td width="75%" align="left">
-								<form action="" class="form-inline" role="form" method="post"> 
+								<form action="<%=YesForm %>" class="form-inline" role="form" method="post"> 
+								<input type="hidden" name="command" value="mallInsert">
+								<input type="hidden" name="num" value="${bean.num}">
+								<input type="hidden" name="stock" value="${bean.stock}">
 									<div class="form-group">
 										<input type="number" name="qty" id="qty" class="form-control"
 											data-toggle="popover" title="수량 입력란" 
@@ -70,17 +73,16 @@
 											data-content="구매하시고자 하는 수량을 정수로 입력하세요.">  
 									</div>
 									<button type="submit" class="btn btn-danger">주문</button>
-									 
 								</form>
 							</td>
 						</tr>
 						<tr>
 							<td width="25%" align="center">포인트</td>
-							<td width="75%" align="left">10</td>
+							<td width="75%" align="left">${bean.point}</td>
 						</tr>						
 						<tr>
 							<td width="25%" align="center">입고 일자</td>
-							<td width="75%" align="left">2021/04/22</td>
+							<td width="75%" align="left">${bean.inputdate}</td>
 						</tr>
 					</table>
 				</div>
@@ -95,12 +97,3 @@
 	</div>
 </body>
 </html>
-
-
-
-
-
-
-
-
-

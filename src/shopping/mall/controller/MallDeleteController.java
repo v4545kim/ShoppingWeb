@@ -14,15 +14,24 @@ public class MallDeleteController extends SuperClass {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		super.doGet(request, response);
 		
-		String id = request.getParameter("id") ;
-		int no = Integer.parseInt(request.getParameter("no")) ;
 		
-		MyCartList mycart = new MyCartList(); 
 		
-		request.setAttribute("bean", null);
+		if (super.session.getAttribute("loginfo") == null) {
+			String gotopage = "/member/meLoginForm.jsp" ;
+			super.GotoPage(gotopage);
+			
+		} else {
+			MyCartList mycart = (MyCartList)super.session.getAttribute("mycart");
+			if (mycart == null) {
+				mycart = new MyCartList();
+			}
+			
+			int pnum = Integer.parseInt(request.getParameter("pnum"));
+			mycart.DeleteOrder(pnum);
+			super.session.setAttribute("mycart", mycart);
+			new MallListController().doGet(request, response);
+		}
 		
-		String gotopage = "/member/main.jsp" ;
-		super.GotoPage(gotopage);
 	}	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

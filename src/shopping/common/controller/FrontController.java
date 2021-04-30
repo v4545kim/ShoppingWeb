@@ -87,12 +87,17 @@ public class FrontController extends HttpServlet {//implements SuperController{
 		//파일 업로드를 이용하기 위하여 multipart/form-data을 사용하게 되면
 		//request 객체를 직접 이용하지 못한다.
 		//파라미터 command를 챙긴다.
-		String command = request.getParameter("command");		
-		ServletContext context = getServletContext();			
+		String command = request.getParameter("command");
+		
+		ServletContext application = getServletContext();
+		String uploadedPath = application.getRealPath("/upload") ; //실제 업로드될 웹서버 경로
+		System.out.println( "uploadedPath : " + uploadedPath );
+		
+		application.setAttribute("uploadedPath", uploadedPath) ;
 		if( command == null ){ //파일 업로드를 위한 케이스이다.
 			System.out.println("파일 업로드를 수행합니다.");
-			String uploadedPath = context.getRealPath("/upload") ; //실제 업로드될 웹서버 경로
-			System.out.println( "uploadedPath : " + uploadedPath );
+			
+			
 			
 			//그래서, 파일 업로드를 위한 MultipartRequest 객체를 구해주는 메소드를 호출한다.
 			MultipartRequest multi = Myutility.getMultiPartRequest(request, uploadedPath) ;
