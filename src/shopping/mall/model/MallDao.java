@@ -3,6 +3,8 @@ package shopping.mall.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -115,5 +117,107 @@ public class MallDao extends SuperDao{
 		}
 		
 	}
+
+	public List<Order> OrderMall(String id) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = " select * from orders";
+		sql += " where mid = ? ";
+		sql += " order by orderdate desc ";
+		
+		
+		List<Order> lists = new ArrayList<Order>();
+				
+		try {
+			if(this.conn == null) {this.conn = this.getConnection();}
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, id);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Order bean = new Order();
+				bean.setMid(rs.getString("mid"));
+				bean.setOid(rs.getInt("oid"));
+				bean.setOrderdate(String.valueOf(rs.getDate("orderdate")));
+				bean.setRemark(rs.getString("remark"));
+						
+				lists.add(bean);
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs!=null) {rs.close();}
+				if(pstmt!=null) {pstmt.close();}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		
+		return lists;
+	}
+
+	public Order SelectDataByPk(int oid) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = " select * from orders ";
+		sql += " where oid = ? ";
+		
+		Order bean = null;
+		
+		try {
+			if(this.conn == null) {this.conn = this.getConnection();}
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, oid);
+			
+			rs = pstmt.executeQuery();
+					
+			if(rs.next()) {
+				bean = new Order();
+				
+				bean.setMid(rs.getString("mid"));
+				bean.setOid(rs.getInt("oid"));
+				bean.setOrderdate(String.valueOf(rs.getDate("orderdate")));
+				bean.setRemark(rs.getString("remark"));
+						
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs!=null) {rs.close();}
+				if(pstmt!=null) {pstmt.close();}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		
+		
+		
+		
+		
+		return bean;
+	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

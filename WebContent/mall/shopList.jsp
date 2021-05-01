@@ -15,7 +15,9 @@
 	<div class="container col-md-offset-<%=offset%> col-md-<%=content%>">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
-				이전 주문 내역
+				<h3 class="panel-title">
+					${sessionScope.loginfo.name}(${sessionScope.loginfo.id})님의 이전 주문 내역
+				</h3>
 			</div>
 			<div class="panel-body">
 				<div class="table-responsive">
@@ -25,10 +27,22 @@
 								<th class="text-center">주문 번호</th>
 								<th class="text-center">주문 일자</th>
 								<th class="text-center">상세 보기</th>
+								<th class="text-center">비고</th>
 							</tr>
 						</thead>
 						<tbody>
-							내용
+							<c:forEach var="shopinfo" items="${requestScope.lists}">
+								<tr class="record">
+									<td align="center">${shopinfo.oid}</td>
+									<td align="center">${shopinfo.orderdate}</td>
+									<td align="center">
+										<a href="<%=NoForm%>mallDetail&oid=${shopinfo.oid}">
+											상세 보기
+										</a>
+									</td>
+									<td align="center">${shopinfo.remark}</td>
+								</tr>
+							</c:forEach>
 						</tbody>
 					</table>
 				</div>
