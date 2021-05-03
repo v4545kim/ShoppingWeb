@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import shopping.common.model.ShoppingInfo;
 import shopping.common.model.SuperDao;
 import shopping.member.model.Member;
+import shopping.product.model.Product;
+import shopping.product.model.ProductDao;
 
 public class MallDao extends SuperDao{
 
@@ -203,8 +206,125 @@ public class MallDao extends SuperDao{
 		
 		return bean;
 	}
+
+	public void InsertCartData(Member mem, Map<Integer, Integer> maplist) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int cnt = -9999;
+		
+		
+		
+		try {
+			if(this.conn == null) {this.conn = this.getConnection();}
+			conn.setAutoCommit(false);
+			
+			Set<Integer> keylist = maplist.keySet();
+			System.out.println("InsertCartData keylist size : " + keylist.size());
+			
+			// 이전 내역을 삭제합니다.
+			String sql = " delete from shoppinginfos ";
+			sql += " where mid = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, mem.getId());
+			
+			cnt = pstmt.executeUpdate();
+			if(pstmt != null) {pstmt.close();}
+			
+			
+			// 반복문을 사용하여 현재 장바구니 정보를 저장하도록 합니다.
+			sql = " insert into shoppinginfos(mid, pnum, pname, qty, price, image, point, inputdate)";
+			sql += " values(?, ?, ?, ?, ?, ?, ?, default) ";
+			
+			for(Integer pnum : keylist) {
+				pstmt = conn.prepareStatement(sql);
+				
+				ProductDao pdao = new ProductDao();
+				Product bean = pdao.SelectDataByPk(pnum);
+				
+				int qty = maplist.get(pnum);
+				
+				pstmt.setString(1, mem.getId());
+				pstmt.setInt(2, pnum);
+				pstmt.setString(3, bean.getName());
+				pstmt.setInt(4, qty);
+				pstmt.setInt(5, bean.getPrice());
+				pstmt.setString(6, bean.getImage());
+				pstmt.setInt(7, bean.getPoint());
+				
+				cnt = pstmt.executeUpdate();
+				
+				if(pstmt != null) {pstmt.close();}
+			}
+			
+			conn.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			try {
+				conn.rollback();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}finally {
+			try {
+				if(rs!=null) {rs.close();}
+				if(pstmt!=null) {pstmt.close();}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		
+	}
+
+	public List<ShoppingInfo> GetShoppingInfo(String id) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = " select * from shoppinginfos ";
+		sql += " where mid = ?";
+		
+		
+		List<ShoppingInfo> lists = new ArrayList<ShoppingInfo>();
+				
+		try {
+			if(this.conn == null) {this.conn = this.getConnection();}
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, id);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				ShoppingInfo bean = new ShoppingInfo();
+				bean.setImage(rs.getString("image"));
+				bean.setPname(rs.getString("pname"));
+				bean.setPnum(rs.getInt("pnum"));
+				bean.setPoint(rs.getInt("point"));
+				bean.setPrice(rs.getInt("price"));
+				bean.setQty(rs.getInt("qty"));
+				
+						
+				lists.add(bean);
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs!=null) {rs.close();}
+				if(pstmt!=null) {pstmt.close();}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		
+		return lists;
+	}
 	
 }
+
 
 
 
