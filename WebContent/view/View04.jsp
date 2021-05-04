@@ -16,22 +16,18 @@
 <body>
 	<div class="container col-sm-offset-<%=myoffset%> col-sm-<%=mywidth%>">
 		<div class="panel panel-default panel-warning">
-			<div class="panel-heading"><h4>회원과 게시물 조인</h4></div>
+			<div class="panel-heading"><h4>고객별 매출 총액</h4></div>
 			<table class="table table-striped table-hover">
 				<thead>
 					<tr>
 						<th>이름</th>
 						<th>글 제목</th>
-						<th>글 내용</th>
-						<th>작성 일자</th>
 					</tr>
 				</thead>
 				<c:forEach var="bean" items="${requestScope.lists}">
 					<tr>
-						<td>${bean.name}</td>
-						<td>${bean.subject}</td>
-						<td>${bean.content}</td>
-						<td>${bean.regdate}</td>						
+						<td>${bean.id}</td>
+						<td>${bean.amount}</td>
 					</tr>
 				</c:forEach>
 			</table>

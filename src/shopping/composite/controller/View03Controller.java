@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import shopping.common.controller.SuperClass;
-import shopping.common.model.Combo01;
+import shopping.common.model.Combo03;
 import shopping.common.model.CompositeDao;
 
 public class View03Controller extends SuperClass{
@@ -18,13 +18,13 @@ public class View03Controller extends SuperClass{
 		
 		CompositeDao dao = new CompositeDao();
 		
-		List<Combo01> lists = dao.View01();
+		List<Combo03> lists = dao.View03();
 		
 		
 		
 		request.setAttribute("lists", lists);
 		
-		String gotopage = "view/View01.jsp";
+		String gotopage = "view/View03.jsp";
 		super.GotoPage(gotopage);
 	}
 }

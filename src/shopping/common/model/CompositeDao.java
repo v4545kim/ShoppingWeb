@@ -258,6 +258,162 @@ public class CompositeDao extends SuperDao{
 		}		
 		return lists ;
 	}
+
+	public List<Combo02> View02() {
+		PreparedStatement pstmt = null ;
+		ResultSet rs = null ;
+		String sql = " select m.name, count(*) as cnt " ; 
+		sql += " from members m inner join boards b ";
+		sql += " on m.id = b.writer ";
+		sql += " group by m.name ";
+		sql += " order by m.name desc ";
+		
+		
+		List<Combo02> lists = new ArrayList<Combo02>();
+		try {
+			if( conn == null ){ super.conn = super.getConnection() ; }
+			pstmt = super.conn.prepareStatement(sql) ;			
+			rs = pstmt.executeQuery() ;
+			
+			while( rs.next() ){
+				Combo02 bean = new Combo02();
+				
+				bean.setName(rs.getString("name"));
+				bean.setCnt(rs.getInt("cnt"));
+				 
+				lists.add( bean ) ;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			try {
+				if( rs != null ){ rs.close(); }
+				if( pstmt != null ){ pstmt.close(); }
+				super.closeConnection(); 
+			} catch (Exception e2) {
+				e2.printStackTrace(); 
+			}
+		}		
+		return lists ;
+	}
+
+	public List<Combo03> View03() {
+		PreparedStatement pstmt = null ;
+		ResultSet rs = null ;
+		String sql = " select m.name mname, p.name pname, od.qty, p.price, p.price * od.qty as amount " ; 
+		sql += " from ((members m inner join orders o ";
+		sql += " on m.id = o.mid) inner join orderdetails od ";
+		sql += " on o.oid = od.oid) inner join products p ";
+		sql += " on od.pnum = p.num ";
+		sql += " order by p.name desc, m.name asc ";
+		
+		
+		List<Combo03> lists = new ArrayList<Combo03>();
+		try {
+			if( conn == null ){ super.conn = super.getConnection() ; }
+			pstmt = super.conn.prepareStatement(sql) ;			
+			rs = pstmt.executeQuery() ;
+			
+			while( rs.next() ){
+				Combo03 bean = new Combo03();
+				
+				bean.setMname(rs.getString("mname"));
+				bean.setPname(rs.getString("pname"));
+				bean.setQty(rs.getInt("qty"));
+				bean.setPrice(rs.getInt("price"));
+				bean.setAmount(rs.getInt("amount"));
+				 
+				lists.add( bean ) ;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			try {
+				if( rs != null ){ rs.close(); }
+				if( pstmt != null ){ pstmt.close(); }
+				super.closeConnection(); 
+			} catch (Exception e2) {
+				e2.printStackTrace(); 
+			}
+		}		
+		return lists ;
+	}
+
+	public List<Combo04> View04() {
+		PreparedStatement pstmt = null ;
+		ResultSet rs = null ;
+		String sql = " select m.id, sum(p.price * od.qty) as amount " ; 
+		sql += " from ((members m inner join orders o ";
+		sql += " on m.id = o.mid) inner join orderdetails od ";
+		sql += " on o.oid = od.oid) inner join products p ";
+		sql += " on od.pnum = p.num ";
+		sql += " group by m.id ";
+		
+		
+		List<Combo04> lists = new ArrayList<Combo04>();
+		try {
+			if( conn == null ){ super.conn = super.getConnection() ; }
+			pstmt = super.conn.prepareStatement(sql) ;			
+			rs = pstmt.executeQuery() ;
+			
+			while( rs.next() ){
+				Combo04 bean = new Combo04();
+				
+				bean.setId(rs.getString("id"));
+				bean.setAmount(rs.getInt("amount"));
+				 
+				lists.add( bean ) ;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			try {
+				if( rs != null ){ rs.close(); }
+				if( pstmt != null ){ pstmt.close(); }
+				super.closeConnection(); 
+			} catch (Exception e2) {
+				e2.printStackTrace(); 
+			}
+		}		
+		return lists ;
+	}
+
+	public List<Combo05> View05() {
+		PreparedStatement pstmt = null ;
+		ResultSet rs = null ;
+		String sql = " select m.id, count(mid) as cnt " ; 
+		sql += " from members m left outer join orders o ";
+		sql += " on m.id = o.mid ";
+		sql += " group by m.id ";
+		
+		
+		List<Combo05> lists = new ArrayList<Combo05>();
+		try {
+			if( conn == null ){ super.conn = super.getConnection() ; }
+			pstmt = super.conn.prepareStatement(sql) ;			
+			rs = pstmt.executeQuery() ;
+			
+			while( rs.next() ){
+				Combo05 bean = new Combo05();
+				
+				bean.setId(rs.getString("id"));
+				bean.setCnt(rs.getInt("cnt"));
+				 
+				lists.add( bean ) ;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			try {
+				if( rs != null ){ rs.close(); }
+				if( pstmt != null ){ pstmt.close(); }
+				super.closeConnection(); 
+			} catch (Exception e2) {
+				e2.printStackTrace(); 
+			}
+		}		
+		return lists ;
+	}
 	
 
 }
