@@ -90,21 +90,46 @@ public class ProductDao extends SuperDao {
       }
       return cnt ;
    }
-   public int DeleteData( int pmkey ){
+   public int DeleteData( int num ){
       String sql = " " ;
-      sql += "  " ;
-      sql += "  " ;
-
       
       PreparedStatement pstmt = null ;
       int cnt = -99999 ;
       try {
          if( conn == null ){ super.conn = super.getConnection() ; }
          conn.setAutoCommit( false );
+         
+         // remark 컬럼 수정
+         sql = "  update orderdetails set remark = ? " ;
+         sql += "  where pnum = ? " ;
+
          pstmt = super.conn.prepareStatement(sql) ;
          
+         Product bean = this.SelectDataByPk(num);
          
-         cnt = pstmt.executeUpdate() ; 
+         String imsi = "상품 " + bean.getName() + "이(가) 삭제되었습니다.";
+         pstmt.setString(1, imsi);
+         pstmt.setInt(2, num);
+         
+         cnt = pstmt.executeUpdate() ;
+         conn.commit();
+         if(pstmt != null) {pstmt.close();}
+         
+         // 해당 상품 삭제
+         if( conn == null ){ super.conn = super.getConnection() ; }
+         conn.setAutoCommit( false );
+         
+         sql = " delete from products " ;
+         sql += " where num = ? " ;
+         
+         pstmt = super.conn.prepareStatement(sql) ;
+         
+         pstmt.setInt(1, num);
+         
+         cnt = pstmt.executeUpdate() ;
+         
+         
+         
          conn.commit(); 
       } catch (Exception e) {
          SQLException err = (SQLException)e ;         
@@ -229,7 +254,7 @@ public class ProductDao extends SuperDao {
          try {
             if( rs != null){ rs.close(); } 
             if( pstmt != null){ pstmt.close(); } 
-            this.closeConnection() ;
+            //this.closeConnection() ;
          } catch (Exception e2) {
             e2.printStackTrace(); 
          }
